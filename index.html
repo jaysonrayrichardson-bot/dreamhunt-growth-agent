@@ -206,5 +206,6 @@ document.getElementById('loginSubmit').onclick=async()=>{const email=document.ge
 sb.auth.onAuthStateChange((event,session)=>{if(event==='SIGNED_OUT'){liveMode=false;liveUser=null;liveOrgId=null;liveRole=null;setBackendLabel();}if(event==='SIGNED_IN'&&session?.user&&!liveMode)loadLiveContext(session.user);});
 renderQueue();renderSponsors();initialDrafts();renderCalendar();renderOpps();renderChart();initBackend();
 </script>
+<script src="sponsor-detail.js"></script>
 </body>
 </html>
