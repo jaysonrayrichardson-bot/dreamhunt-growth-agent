@@ -23,13 +23,20 @@
 <header class="top"><div class="brandmark"><svg viewBox="0 0 100 100" aria-hidden="true"><path d="M50 8c-4 14-13 16-25 10 8 10 9 20 2 30 9-5 16-3 21 4-5 8-4 19 2 32 6-13 7-24 2-32 5-7 12-9 21-4-7-10-6-20 2-30-12 6-21 4-25-10z" fill="currentColor"/></svg></div><div class="grow"><h1>Dream Hunt Guide</h1><p id="topSub">Volunteer field app</p></div><span class="conn" id="conn">ONLINE</span></header>
 
 <section id="authScreen" class="screen active">
-  <div class="card hero"><h2 style="margin:0 0 6px">Welcome, Guide</h2><p style="margin:0;font-size:12px">Sign in with the email Dream Hunt used for your guide profile.</p></div>
-  <div class="card">
-    <div class="auth-tabs"><button class="btn primary" id="signInTab">Sign In</button><button class="btn" id="createTab">Create Account</button></div>
-    <div class="field"><div class="label">Email</div><input class="input" id="email" type="email" autocomplete="email"></div>
-    <div class="field"><div class="label">Password</div><input class="input" id="password" type="password" autocomplete="current-password"></div>
-    <button class="btn primary full" id="authBtn">Sign In</button>
-    <p class="safe-note">Your account only receives access to weekends Dream Hunt has authorized for your guide profile.</p>
+  <div class="card hero"><h2 style="margin:0 0 6px">Welcome, Guide</h2><p style="margin:0;font-size:12px">Enter the mobile number Dream Hunt has on file. We’ll text you a 6-digit code.</p></div>
+  <div class="card" id="phoneStep">
+    <div class="field"><div class="label">Mobile Number</div><input class="input" id="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="(318) 555-1234"></div>
+    <button class="btn primary full" id="sendCodeBtn">Text Me a Code</button>
+    <p class="safe-note">No password to remember. The phone number must match your Dream Hunt guide profile.</p>
+  </div>
+  <div class="card hidden" id="codeStep">
+    <div class="label">Verification Code</div>
+    <h3 style="margin:0 0 6px">Check your text messages</h3>
+    <p class="small" id="codeSentTo">Enter the 6-digit code we sent you.</p>
+    <div class="field"><input class="input" id="otpCode" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="6" pattern="[0-9]*" placeholder="123456" style="font-size:26px;letter-spacing:.22em;text-align:center;font-weight:900"></div>
+    <button class="btn primary full" id="verifyCodeBtn">Verify & Continue</button>
+    <div class="row" style="margin-top:8px"><button class="btn grow" id="resendCodeBtn">Resend Code</button><button class="btn grow" id="changePhoneBtn">Change Number</button></div>
+    <p class="safe-note">Codes expire quickly for security. If it does not arrive, wait a minute and tap Resend Code.</p>
   </div>
 </section>
 
@@ -67,5 +74,5 @@
 <button class="nav" data-screen="safetyScreen"><span class="ico">!</span>Safety</button>
 </div></nav>
 <div class="toast" id="toast"></div>
-<script src="app.js"></script>
+<script src="app-v2.js"></script>
 </body></html>
