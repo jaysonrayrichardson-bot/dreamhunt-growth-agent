@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#153d2d">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Dream Hunt Guide">
+<title>Dream Hunt Guide</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icon.svg">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root{--green:#153d2d;--green2:#234f3b;--lime:#c7ef78;--bg:#f2f4ef;--card:#fff;--ink:#17231b;--muted:#6d776f;--line:#dce2da;--danger:#b33f32;--warn:#bd7a28;--shadow:0 10px 30px rgba(31,57,43,.11)}
+*{box-sizing:border-box}html,body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}body{min-height:100dvh}.shell{max-width:720px;margin:0 auto;min-height:100dvh;padding:env(safe-area-inset-top) 14px calc(88px + env(safe-area-inset-bottom))}
+.top{position:sticky;top:0;z-index:20;margin:0 -14px 12px;padding:13px 16px;background:rgba(21,61,45,.96);color:#fff;backdrop-filter:blur(12px);display:flex;align-items:center;gap:10px}.brandmark{width:42px;height:42px;border-radius:12px;background:#fff;display:grid;place-items:center;color:#000;flex:0 0 auto}.brandmark svg{width:32px;height:32px}.top h1{font-size:16px;margin:0;font-weight:850}.top p{font-size:10px;margin:2px 0 0;color:#cbd9cf}.grow{flex:1}.conn{font-size:9px;padding:5px 8px;border-radius:999px;background:#ffffff1c}.conn.off{background:#5f201b}.screen{display:none}.screen.active{display:block}.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px;box-shadow:var(--shadow);margin-bottom:12px}.hero{background:linear-gradient(135deg,var(--green),var(--green2));color:#fff;border:0}.hero p{color:#d5e0d8}.label{font-size:10px;font-weight:850;letter-spacing:.08em;color:var(--muted);text-transform:uppercase;margin-bottom:6px}.input,select,textarea{width:100%;border:1px solid var(--line);border-radius:13px;padding:13px;background:#fff;font:inherit;color:var(--ink)}textarea{min-height:90px;resize:vertical}.field{margin-bottom:12px}.btn{appearance:none;border:1px solid var(--line);background:#fff;color:var(--ink);border-radius:13px;padding:12px 14px;font-weight:800;font-size:13px;cursor:pointer}.btn.primary{background:var(--green);border-color:var(--green);color:#fff}.btn.accent{background:var(--lime);border-color:var(--lime);color:#183020}.btn.danger{background:var(--danger);border-color:var(--danger);color:#fff}.btn.ghost{background:transparent;color:#fff;border-color:#ffffff44}.btn.full{width:100%}.btn:disabled{opacity:.45;cursor:not-allowed}.row{display:flex;gap:8px;align-items:center}.row.wrap{flex-wrap:wrap}.pill{font-size:10px;font-weight:800;border-radius:999px;padding:5px 8px;background:#eef1eb;color:#536258}.pill.green{background:#e8f4df;color:#49643d}.pill.orange{background:#fff0df;color:#915d21}.pill.red{background:#ffe8e4;color:#96392f}.hunt{border:1px solid var(--line);border-radius:15px;padding:13px;margin-top:9px}.hunt.selected{border-color:#79a566;background:#f4f9ef}.hunt h3{font-size:14px;margin:0 0 5px}.small{font-size:11px;color:var(--muted);line-height:1.45}.statusgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px}.statusbox{padding:11px;border:1px solid var(--line);border-radius:13px;background:#fff}.statusbox small{display:block;font-size:9px;color:var(--muted);text-transform:uppercase;font-weight:800}.statusbox b{font-size:13px;display:block;margin-top:3px}.uploadbox{border:1.5px dashed #aeb9b0;border-radius:16px;padding:18px;text-align:center}.previewgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-top:12px}.preview{aspect-ratio:1;border-radius:11px;background:#e8ece6;overflow:hidden;display:grid;place-items:center;font-size:24px}.preview img,.preview video{width:100%;height:100%;object-fit:cover}.chat{height:340px;overflow:auto;display:grid;align-content:start;gap:7px;padding:4px}.msg{max-width:86%;padding:9px 11px;border-radius:13px;background:#eef1ec;font-size:12px;line-height:1.4}.msg.mine{justify-self:end;background:#dff0d0}.msg.emergency{background:#ffe7e2;border:1px solid #e8a49b}.msg .meta{font-size:9px;color:var(--muted);margin-bottom:3px}.emergency{padding:18px}.emergency .big{font-size:24px;font-weight:900}.emergency p{font-size:11px;color:#f4d6d1;line-height:1.45}.bottom{position:fixed;left:0;right:0;bottom:0;z-index:30;padding:8px 10px calc(8px + env(safe-area-inset-bottom));background:rgba(255,255,255,.96);border-top:1px solid var(--line);backdrop-filter:blur(14px)}.bottom-inner{max-width:720px;margin:0 auto;display:grid;grid-template-columns:repeat(5,1fr);gap:4px}.nav{border:0;background:transparent;padding:8px 4px;border-radius:11px;color:var(--muted);font-size:9px;font-weight:800}.nav .ico{display:block;font-size:20px;margin-bottom:2px}.nav.active{background:#e9f1e5;color:var(--green)}.toast{position:fixed;left:50%;bottom:96px;transform:translateX(-50%) translateY(20px);background:#17231b;color:#fff;padding:10px 14px;border-radius:12px;font-size:11px;opacity:0;pointer-events:none;transition:.2s;z-index:99;max-width:90%;text-align:center}.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}.hidden{display:none!important}.spinner{width:18px;height:18px;border:2px solid #ffffff66;border-top-color:#fff;border-radius:50%;animation:spin .8s linear infinite;display:inline-block}@keyframes spin{to{transform:rotate(360deg)}}.auth-tabs{display:flex;gap:6px;margin-bottom:14px}.auth-tabs button{flex:1}.gps-on{color:#527943}.gps-off{color:#a45a28}.safe-note{font-size:10px;line-height:1.5;color:var(--muted);margin-top:9px}
+</style>
+</head>
+<body>
+<div class="shell">
+<header class="top"><div class="brandmark"><svg viewBox="0 0 100 100" aria-hidden="true"><path d="M50 8c-4 14-13 16-25 10 8 10 9 20 2 30 9-5 16-3 21 4-5 8-4 19 2 32 6-13 7-24 2-32 5-7 12-9 21-4-7-10-6-20 2-30-12 6-21 4-25-10z" fill="currentColor"/></svg></div><div class="grow"><h1>Dream Hunt Guide</h1><p id="topSub">Volunteer field app</p></div><span class="conn" id="conn">ONLINE</span></header>
+
+<section id="authScreen" class="screen active">
+  <div class="card hero"><h2 style="margin:0 0 6px">Welcome, Guide</h2><p style="margin:0;font-size:12px">Sign in with the email Dream Hunt used for your guide profile.</p></div>
+  <div class="card">
+    <div class="auth-tabs"><button class="btn primary" id="signInTab">Sign In</button><button class="btn" id="createTab">Create Account</button></div>
+    <div class="field"><div class="label">Email</div><input class="input" id="email" type="email" autocomplete="email"></div>
+    <div class="field"><div class="label">Password</div><input class="input" id="password" type="password" autocomplete="current-password"></div>
+    <button class="btn primary full" id="authBtn">Sign In</button>
+    <p class="safe-note">Your account only receives access to weekends Dream Hunt has authorized for your guide profile.</p>
+  </div>
+</section>
+
+<section id="homeScreen" class="screen">
+ <div class="card hero"><div class="label" style="color:#bad0c0">GUIDE</div><h2 id="hello" style="margin:0 0 4px">Welcome</h2><p id="weekendSummary" style="margin:0">Loading your hunt weekend…</p></div>
+ <div class="card"><div class="label">My Weekend</div><div id="weekendList"></div></div>
+ <div class="card"><div class="label">My Hunt</div><div id="currentHuntBox"><div class="small">Choose a weekend and hunt to get started.</div></div></div>
+</section>
+
+<section id="huntScreen" class="screen">
+ <div class="card"><div class="label">Available Hunts</div><div id="huntList"></div></div>
+ <div class="card" id="fieldControls"><div class="label">Field Status</div><div class="statusgrid"><div class="statusbox"><small>Assignment</small><b id="assignmentStatus">Not selected</b></div><div class="statusbox"><small>Location</small><b id="gpsStatus" class="gps-off">Off</b></div></div><div class="row wrap" style="margin-top:10px"><button class="btn primary" id="checkInBtn">Check In</button><button class="btn" id="checkOutBtn">Check Out</button><button class="btn" id="sendGpsBtn">Send GPS Now</button></div><p class="safe-note">Periodic GPS starts only after you check in and stops when you check out. Location is for active hunt safety and emergency response.</p></div>
+</section>
+
+<section id="mediaScreen" class="screen">
+ <div class="card"><div class="label">Upload Hunt Media</div><div class="uploadbox"><div style="font-size:30px">📷</div><h3 style="margin:5px 0">Photos & Video</h3><p class="small">Uploads go privately to Dream Hunt for content review.</p><input id="mediaInput" type="file" accept="image/*,video/*" multiple capture="environment" class="hidden"><button class="btn accent" id="mediaBtn">Choose / Capture</button></div><div id="uploadProgress" class="small" style="margin-top:8px"></div><div class="previewgrid" id="mediaPreview"></div></div>
+</section>
+
+<section id="chatScreen" class="screen">
+ <div class="card"><div class="row"><div class="grow"><div class="label">Weekend Chat</div><div class="small" id="chatScope">All guides</div></div><select id="chatTarget" style="width:auto;max-width:52%"><option value="">All Guides</option></select></div><div class="chat" id="chatBox"></div><div class="row" style="margin-top:9px"><textarea id="chatInput" style="min-height:48px" placeholder="Message the team…"></textarea><button class="btn primary" id="sendChatBtn">Send</button></div></div>
+</section>
+
+<section id="safetyScreen" class="screen">
+ <div class="card emergency hero" style="background:linear-gradient(135deg,#8f2f26,#bd4b3d)"><div class="big">Emergency</div><p>Use this only if you need immediate Dream Hunt assistance. Your current GPS will be sent when available and the alert will appear in Guide Ops.</p><div class="field"><div class="label" style="color:#f2cbc5">Optional message</div><textarea id="emergencyMessage" placeholder="What happened?"></textarea></div><button class="btn full" style="background:#fff;color:#9a3026;border-color:#fff;font-size:16px" id="emergencyBtn">SEND EMERGENCY ALERT</button></div>
+ <div class="card"><div class="label">Safety Status</div><div class="small" id="safetyStatus">No active emergency.</div></div>
+ <div class="card"><button class="btn full" id="signOutBtn">Sign Out</button></div>
+</section>
+</div>
+
+<nav class="bottom hidden" id="bottomNav"><div class="bottom-inner">
+<button class="nav active" data-screen="homeScreen"><span class="ico">⌂</span>Home</button>
+<button class="nav" data-screen="huntScreen"><span class="ico">⌖</span>Hunt</button>
+<button class="nav" data-screen="mediaScreen"><span class="ico">📷</span>Media</button>
+<button class="nav" data-screen="chatScreen"><span class="ico">✉</span>Chat</button>
+<button class="nav" data-screen="safetyScreen"><span class="ico">!</span>Safety</button>
+</div></nav>
+<div class="toast" id="toast"></div>
+<script src="app.js"></script>
+</body></html>
