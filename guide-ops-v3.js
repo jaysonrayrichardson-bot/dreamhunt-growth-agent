@@ -33,7 +33,7 @@ if(!section){
   document.querySelector('main').insertBefore(section,document.getElementById('guardrails'));
 }
 section.innerHTML=
-'<div class="section-title"><div><h3>Guide Ops</h3><p>Load every hunt, authorize guides, receive media, monitor GPS/emergencies and communicate during the weekend.</p></div><div class="go-actions"><button class="btn" id="goAddGuide">+ Guide</button><button class="btn" id="goAddHunt">+ Hunt</button><button class="btn primary" id="goAddWeekend">+ Hunt weekend</button></div></div>'+
+'<div class="section-title"><div><h3>Guide Ops</h3><p>Load every hunt, authorize guides, receive media, monitor GPS/emergencies and communicate during the weekend.</p></div><div class="go-actions"><button class="btn" id="goOpenMobile">Open Guide App</button><button class="btn" id="goAddGuide">+ Guide</button><button class="btn" id="goAddHunt">+ Hunt</button><button class="btn primary" id="goAddWeekend">+ Hunt weekend</button></div></div>'+
 '<div class="card" style="margin-bottom:16px"><div class="go-toolbar"><strong>Weekend</strong><select id="goWeekendSelect"></select><button class="btn small" id="goEditWeekend">Edit weekend</button><span class="badge" id="goRealtimeBadge"><span class="go-live-dot"></span>Realtime ready</span><button class="btn small" id="goRefresh">Refresh</button></div><div class="go-privacy">Guide GPS is intended for active hunt safety. Guides only get weekend access you explicitly authorize and can only send field data for hunts they are assigned to.</div></div>'+
 '<div class="grid stats" id="goStats"><div class="stat"><div class="k">Hunts</div><div class="v">0</div><div class="trend">This weekend</div></div><div class="stat"><div class="k">Authorized guides</div><div class="v">0</div><div class="trend">Mobile access roster</div></div><div class="stat"><div class="k">Media received</div><div class="v">0</div><div class="trend">Photos & video</div></div><div class="stat"><div class="k">Emergencies</div><div class="v">0</div><div class="trend">Open alerts</div></div></div>'+
 '<div class="guideops-grid" style="margin-top:16px"><div class="card"><div class="cardhead"><div><h3>Hunts this weekend</h3><p>The choices the guide mobile app will present.</p></div></div><div class="go-stack" id="goHunts"></div></div><div class="card"><div class="cardhead"><div><h3>Live field status</h3><p>Latest guide location, assignment status and emergencies.</p></div></div><div id="goEmergencies"></div><div class="go-stack" id="goLocations" style="margin-top:10px"></div></div></div>'+
@@ -54,6 +54,7 @@ const guideModal=makeModal('goGuideModal','Volunteer guide','<div class="field">
 const assignModal=makeModal('goAssignModal','Manage hunt guides','<div id="goAssignBody"></div>');
 const mediaModal=makeModal('goMediaModal','Guide media preview','<div id="goMediaPreview"></div>');
 
+document.getElementById('goOpenMobile').onclick=()=>window.open('./guide/','_blank','noopener');
 document.getElementById('goAddWeekend').onclick=()=>openWeekend();
 document.getElementById('goEditWeekend').onclick=()=>openWeekend(weekendId);
 document.getElementById('goAddHunt').onclick=()=>{if(!weekendId)return notice('Create or select a hunt weekend first.');openHunt()};
