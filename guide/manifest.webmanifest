@@ -1,0 +1,11 @@
+{
+  "name":"Dream Hunt Guide",
+  "short_name":"DH Guide",
+  "start_url":"./",
+  "scope":"./",
+  "display":"standalone",
+  "background_color":"#f2f4ef",
+  "theme_color":"#153d2d",
+  "description":"Dream Hunt Foundation volunteer guide field app",
+  "icons":[{"src":"icon.svg","sizes":"any","type":"image/svg+xml","purpose":"any maskable"}]
+}
