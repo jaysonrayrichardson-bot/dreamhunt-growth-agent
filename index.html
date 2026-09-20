@@ -179,11 +179,16 @@ async function deleteContentStudioMedia(id){
   mediaAssets=mediaAssets.filter(x=>String(x.id)!==String(id));
   renderMediaAssets();toast('Local demo media removed.');return;
  }
- const r=await sb.functions.invoke('admin-delete-media',{body:{media_id:id}});
- if(r.error)return toast('Could not delete media: '+(r.error.message||'Unknown error'));
- if(r.data?.error)return toast('Could not delete media: '+r.data.error);
- mediaAssets=mediaAssets.filter(x=>String(x.id)!==String(id));
- renderMediaAssets();toast('Media deleted permanently.');
+ try{
+  if(m.storage_path){
+   const sr=await sb.storage.from('dh-trial-media').remove([m.storage_path]);
+   if(sr.error)throw new Error('Storage delete failed: '+sr.error.message);
+  }
+  const dr=await sb.from('dh_media_assets').delete().eq('org_id',liveOrgId).eq('id',id);
+  if(dr.error)throw new Error('Media record delete failed: '+dr.error.message);
+  mediaAssets=mediaAssets.filter(x=>String(x.id)!==String(id));
+  renderMediaAssets();toast('Media deleted permanently.');
+ }catch(e){toast('Could not delete media: '+(e.message||e))}
 }
 function renderMediaAssets(){const grid=document.getElementById('mediaGrid');if(!grid)return;if(!mediaAssets.length){grid.innerHTML='';return}grid.innerHTML=mediaAssets.map(m=>{const isVideo=(m.media_type||'').startsWith('video')||m.kind==='video';const preview=m.preview_url?(isVideo?`<video src="${m.preview_url}" muted playsinline controls preload="metadata"></video>`:`<img src="${m.preview_url}" alt="">`):`<div class="fileicon">${isVideo?'▶':'▧'}</div>`;return `<div class="media-card"><div class="media-thumb">${preview}</div><div class="media-info"><div class="media-name" title="${escapeHtml(m.name||m.caption||'Media')}">${escapeHtml(m.name||m.caption||'Media')}</div><div class="media-meta">${escapeHtml(m.media_type||m.kind||'media')}${m.size?' • '+fmtBytes(m.size):''}</div><div class="media-state">${m.demo?'Local demo preview only':'Private • awaiting media approval'}</div><div style="margin-top:7px"><button class="btn small" data-delete-media="${m.id}" style="color:#9a3e30">Delete</button></div></div></div>`}).join('');grid.querySelectorAll('[data-delete-media]').forEach(b=>b.onclick=()=>deleteContentStudioMedia(b.dataset.deleteMedia))}
 async function loadMediaAssets(){if(!liveMode||!liveOrgId){renderMediaAssets();return}let q=sb.from('dh_media_assets').select('id,activity_id,permission_id,storage_path,media_type,caption,approved_for_social,approved_for_sponsor_use,metadata,created_at').eq('org_id',liveOrgId).order('created_at',{ascending:false}).limit(12);if(currentActivityId)q=q.eq('activity_id',currentActivityId);const {data,error}=await q;if(error){document.getElementById('uploadStatus').textContent='Could not load media: '+error.message;return}const rows=data||[];const signed=await Promise.all(rows.map(async x=>{const {data:s}=await sb.storage.from('dh-trial-media').createSignedUrl(x.storage_path,3600);return {...x,name:x.caption||x.metadata?.original_name||'Media',size:Number(x.metadata?.size||0),preview_url:s?.signedUrl||null}}));mediaAssets=signed;renderMediaAssets();const u=document.getElementById('uploadStatus');if(u)u.textContent=rows.length?`${rows.length} private media item${rows.length===1?'':'s'} attached to this activity.`:'No media attached to this activity yet.'}
@@ -226,6 +231,6 @@ renderQueue();renderSponsors();initialDrafts();renderCalendar();renderOpps();ren
 <script src="family-permissions.js"></script>
 <script src="impact-reporting.js"></script>
 <script src="dashboard-live.js"></script>
-<script src="guide-ops-v7.js"></script>
+<script src="guide-ops-v8.js"></script>
 </body>
 </html>
