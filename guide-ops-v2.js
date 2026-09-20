@@ -241,6 +241,7 @@ function openHunt(id){
   editingHuntId=id||null;const h=id?byId(hunts,id):null;
   document.getElementById('goHTitle').value=h?.title||'';document.getElementById('goHStart').value=localInput(h?.scheduled_start);document.getElementById('goHEnd').value=localInput(h?.scheduled_end);document.getElementById('goHStatus').value=h?.status||'open';document.getElementById('goHMax').value=h?.max_guides||4;document.getElementById('goHLocation').value=h?.location_label||'';document.getElementById('goHMeeting').value=h?.meeting_point||'';document.getElementById('goHInstructions').value=h?.guide_instructions||'';document.getElementById('goHEmergency').value=h?.emergency_notes||'';huntModal.classList.add('open');
 }
+function activityStatusForHunt(status){return status==='planning'?'draft':status==='complete'?'complete':status==='cancelled'?'archived':'ready'}
 async function saveHunt(){
   if(!live())return notice('Connect the trial backend to save hunts.');
   const title=document.getElementById('goHTitle').value.trim();if(!title)return notice('Hunt name is required.');
@@ -248,9 +249,9 @@ async function saveHunt(){
   if(editingHuntId){
     const h=byId(hunts,editingHuntId),r=await sb.from('dh_hunts').update({title,scheduled_start:start?new Date(start).toISOString():null,scheduled_end:end?new Date(end).toISOString():null,location_label:location,meeting_point:meeting,guide_instructions,emergency_notes,status,max_guides}).eq('org_id',liveOrgId).eq('id',editingHuntId).select().single();
     if(r.error)return notice('Could not update hunt: '+r.error.message);
-    if(h?.activity_id)await sb.from('dh_activities').update({title,starts_at:start?new Date(start).toISOString():null,location_label:location,status:status==='complete'?'complete':status==='cancelled'?'cancelled':'scheduled'}).eq('org_id',liveOrgId).eq('id',h.activity_id);
+    if(h?.activity_id)await sb.from('dh_activities').update({title,starts_at:start?new Date(start).toISOString():null,location_label:location,status:activityStatusForHunt(status)}).eq('org_id',liveOrgId).eq('id',h.activity_id);
   }else{
-    const ar=await sb.from('dh_activities').insert({org_id:liveOrgId,title,activity_type:'hunt',starts_at:start?new Date(start).toISOString():null,location_label:location,story_notes:null,status:'scheduled',created_by:liveUser.id}).select().single();
+    const ar=await sb.from('dh_activities').insert({org_id:liveOrgId,title,activity_type:'hunt',starts_at:start?new Date(start).toISOString():null,location_label:location,story_notes:null,status:activityStatusForHunt(status),created_by:liveUser.id}).select().single();
     if(ar.error)return notice('Could not create linked activity: '+ar.error.message);
     const hr=await sb.from('dh_hunts').insert({org_id:liveOrgId,weekend_id:weekendId,activity_id:ar.data.id,title,scheduled_start:start?new Date(start).toISOString():null,scheduled_end:end?new Date(end).toISOString():null,location_label:location,meeting_point:meeting,guide_instructions,emergency_notes,status,max_guides,created_by:liveUser.id}).select().single();
     if(hr.error){await sb.from('dh_activities').delete().eq('id',ar.data.id);return notice('Could not create hunt: '+hr.error.message)}
